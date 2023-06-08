@@ -17,7 +17,6 @@ export const apiRequest = async <T>(config: AxiosRequestConfig): Promise<T> => {
 
   try {
     const response = await api(config)
-    // console.log('RESPONSE', response)
 
     return response.data
   } catch (error) {

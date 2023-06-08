@@ -1,22 +1,24 @@
 import { Card, CardContent, CardMedia, Typography } from '@mui/material'
 import { useState } from 'react'
+import { voteCustomRound } from '../utils/helpers/helperFunctions'
 import { VotingBox } from './VotingBox'
 
 interface MovieCardProps {
   title: string
   imgPath: string
   voteAverage: string
+  id: string
 }
 
 export const MovieCard = (props: MovieCardProps) => {
-  const { imgPath, title, voteAverage } = props
+  const { imgPath, title, voteAverage, id } = props
   const [isHovered, setIsHovered] = useState(false)
 
   if (!imgPath || !title) {
     return null
   }
 
-  const voteStars = Number((Number(voteAverage) / 2).toFixed(1))
+  const voteStars = voteCustomRound(Number(voteAverage) / 2)
 
   return (
     <Card
@@ -52,7 +54,7 @@ export const MovieCard = (props: MovieCardProps) => {
           <Typography variant='body2' textAlign='center' color='white'>
             {title}
           </Typography>
-          <VotingBox vote={voteStars} />
+          <VotingBox vote={voteStars} id={id} />
           <Typography variant='body2' textAlign='center' color='white'>
             Vote Average: {voteStars}
           </Typography>

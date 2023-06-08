@@ -7,7 +7,7 @@ export const searchMovies = (
 ): Promise<any> => {
   const config: AxiosRequestConfig = {
     method: 'GET',
-    url: `/search/movie?query=${searchTerm}&include_adult=false&language=en-US&page=${page}&sort_by=vote_average.desc`
+    url: `/search/movie?query=${searchTerm}&language=en-US&page=${page}`
   }
 
   return apiRequest<any>(config)
