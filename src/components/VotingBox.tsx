@@ -6,7 +6,7 @@ import { voteCustomRound } from '../utils/helpers/helperFunctions'
 
 export interface VoteProps {
   vote: number
-  id: string
+  id: number
 }
 
 export const VotingBox = (props: VoteProps) => {

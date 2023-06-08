@@ -14,7 +14,7 @@ import {
 interface MapContextProps {
   votedMovies: VoteProps[]
   setVotedMovies: Dispatch<SetStateAction<VoteProps[]>>
-  handleMovieVote: (id: string, vote: number) => void
+  handleMovieVote: (id: number, vote: number) => void
 }
 
 export const MoviesContext = createContext<MapContextProps>({
@@ -28,7 +28,7 @@ export const MovieContextProvider = (props: PropsWithChildren) => {
     getVotedMoviesStorage()
   )
 
-  const handleMovieVote = (id: string, vote: number) => {
+  const handleMovieVote = (id: number, vote: number) => {
     const newVotedMovie = { id, vote }
     setVotedMovies([...votedMovies, newVotedMovie])
     setVotedMoviesStorage([...votedMovies, newVotedMovie])

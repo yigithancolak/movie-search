@@ -8,3 +8,10 @@ export const voteCustomRound = (num: number) => {
     return integerPart
   }
 }
+
+export const voteFixer = (vote: number) => {
+  if (vote === Math.floor(vote)) {
+    return vote.toString()
+  }
+  return (vote / 2).toFixed(1)
+}
