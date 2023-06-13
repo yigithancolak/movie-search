@@ -1,5 +1,3 @@
-// https://api.themoviedb.org/3/search/movie?api_key=6b9fc0170374d3132369e49f0850c678&query=the+avengers
-
 import axios, { AxiosRequestConfig } from 'axios'
 import {
   moviedbAccessToken,

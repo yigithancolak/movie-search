@@ -10,8 +10,7 @@ export const voteCustomRound = (num: number) => {
 }
 
 export const voteFixer = (vote: number) => {
-  if (vote === Math.floor(vote)) {
-    return vote.toString()
-  }
-  return (vote / 2).toFixed(1)
+  vote = Math.floor(vote * 10) / 10
+  //toFixed method will round the number. code above is to prevent it.
+  return vote.toFixed(1)
 }

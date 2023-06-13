@@ -5,17 +5,25 @@ import {
   InputAdornment,
   TextField
 } from '@mui/material'
-import { Dispatch, FormEvent, SetStateAction } from 'react'
+import { FormEvent, useContext, useState } from 'react'
+import { MoviesContext } from '../store/contexts/MoviesContext'
+import { ActionTypes } from '../store/reducer/actions'
 
-interface MovieSearchProps {
-  searchLoading: boolean
-  searchTerm: string
-  handleMovieSearch: (e: FormEvent<HTMLFormElement>) => void
-  setSearchTerm: Dispatch<SetStateAction<string>>
-}
+export const MovieSearch = (props: { isFetching: boolean }) => {
+  const { isFetching } = props
+  const { dispatch } = useContext(MoviesContext)
+  const [searchTerm, setSearchTerm] = useState('')
 
-export const MovieSearch = (props: MovieSearchProps) => {
-  const { searchLoading, searchTerm, handleMovieSearch, setSearchTerm } = props
+  const handleMovieSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (searchTerm === '') {
+      return
+    }
+
+    dispatch({ type: ActionTypes.SET_SEARCHED_TERM, payload: searchTerm })
+  }
+
   return (
     <form onSubmit={handleMovieSearch}>
       <TextField
@@ -23,19 +31,21 @@ export const MovieSearch = (props: MovieSearchProps) => {
         label='Search Movie'
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
+        data-cy='form-input'
         InputProps={{
           endAdornment: (
             <InputAdornment position='end'>
-              {!searchLoading ? (
+              {!isFetching ? (
                 <IconButton
+                  data-cy='form-submit'
                   aria-label='search'
-                  disabled={searchLoading}
+                  disabled={isFetching}
                   type='submit'
                 >
                   <SearchOutlined />
                 </IconButton>
               ) : (
-                <CircularProgress size={30} />
+                <CircularProgress size={30} data-cy='search-progress' />
               )}
             </InputAdornment>
           )

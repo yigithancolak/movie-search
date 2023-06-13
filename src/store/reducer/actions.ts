@@ -1,0 +1,5 @@
+export enum ActionTypes {
+  PAGE_CHANGE = 'PAGE_CHANGE',
+  SET_SEARCHED_TERM = 'SET_SEARCH_TERM',
+  VOTE_MOVIE = 'VOTE_MOVIE'
+}

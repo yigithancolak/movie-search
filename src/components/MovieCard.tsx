@@ -1,6 +1,6 @@
 import { Card, CardContent, CardMedia, Typography } from '@mui/material'
 import { useState } from 'react'
-import { voteCustomRound, voteFixer } from '../utils/helpers/helperFunctions'
+import { voteFixer } from '../utils/helpers/helperFunctions'
 import { VotingBox } from './VotingBox'
 
 interface MovieCardProps {
@@ -18,8 +18,6 @@ export const MovieCard = (props: MovieCardProps) => {
     return null
   }
 
-  const voteStars = voteCustomRound(voteAverage / 2)
-
   return (
     <Card
       sx={{
@@ -29,6 +27,7 @@ export const MovieCard = (props: MovieCardProps) => {
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      data-cy='movie-card'
     >
       <CardMedia
         sx={{ objectFit: 'fill' }}
@@ -54,11 +53,12 @@ export const MovieCard = (props: MovieCardProps) => {
             transform: isHovered ? 'translateY(0%)' : 'translateY(100%)',
             transition: 'all .3s ease-in-out'
           }}
+          data-cy='card-content'
         >
           <Typography variant='body2' textAlign='center' color='white'>
             {title}
           </Typography>
-          <VotingBox vote={voteStars} id={id} />
+          <VotingBox vote={voteAverage} id={id} />
           <Typography variant='body2' textAlign='center' color='white'>
             Vote Average: {voteFixer(voteAverage)}
           </Typography>

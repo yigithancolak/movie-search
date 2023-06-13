@@ -1,46 +1,40 @@
-import {
-  Dispatch,
-  PropsWithChildren,
-  SetStateAction,
-  createContext,
-  useState
-} from 'react'
+import { Dispatch, PropsWithChildren, createContext, useReducer } from 'react'
 import { VoteProps } from '../../components/VotingBox'
-import {
-  getVotedMoviesStorage,
-  setVotedMoviesStorage
-} from '../../utils/helpers/localStorage'
+import { getVotedMoviesStorage } from '../../utils/helpers/localStorage'
+import { reducer } from '../reducer'
+import { ActionTypes } from '../reducer/actions'
 
-interface MapContextProps {
+export interface InitialStateTypes {
   votedMovies: VoteProps[]
-  setVotedMovies: Dispatch<SetStateAction<VoteProps[]>>
-  handleMovieVote: (id: number, vote: number) => void
+  searchedTerm: string
 }
 
-export const MoviesContext = createContext<MapContextProps>({
-  votedMovies: [],
-  setVotedMovies: () => null,
-  handleMovieVote: () => null
+interface MovieContextProps {
+  state: InitialStateTypes
+  dispatch: Dispatch<{ type: ActionTypes; payload: any }>
+}
+
+export const initialState = {
+  votedMovies: getVotedMoviesStorage(),
+  searchedTerm: ''
+}
+
+export const MoviesContext = createContext<MovieContextProps>({
+  state: initialState,
+  dispatch: () => null
 })
 
 export const MovieContextProvider = (props: PropsWithChildren) => {
-  const [votedMovies, setVotedMovies] = useState<VoteProps[]>(
-    getVotedMoviesStorage()
-  )
-
-  const handleMovieVote = (id: number, vote: number) => {
-    const newVotedMovie = { id, vote }
-    setVotedMovies([...votedMovies, newVotedMovie])
-    setVotedMoviesStorage([...votedMovies, newVotedMovie])
-  }
+  const [state, dispatch] = useReducer(reducer, initialState)
 
   return (
     <MoviesContext.Provider
-      value={{
-        votedMovies,
-        setVotedMovies,
-        handleMovieVote
-      }}
+      value={
+        {
+          state,
+          dispatch
+        } as MovieContextProps
+      }
     >
       {props.children}
     </MoviesContext.Provider>

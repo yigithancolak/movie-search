@@ -2,6 +2,7 @@ import { Star, StarHalf, StarOutline } from '@mui/icons-material'
 import { Box, Typography } from '@mui/material'
 import { useContext, useState } from 'react'
 import { MoviesContext } from '../store/contexts/MoviesContext'
+import { ActionTypes } from '../store/reducer/actions'
 import { voteCustomRound } from '../utils/helpers/helperFunctions'
 
 export interface VoteProps {
@@ -11,20 +12,25 @@ export interface VoteProps {
 
 export const VotingBox = (props: VoteProps) => {
   const { vote, id } = props
-  const { votedMovies, handleMovieVote } = useContext(MoviesContext)
-
-  const [hoveredStar, setHoveredStar] = useState(0)
+  const {
+    state: { votedMovies },
+    dispatch
+  } = useContext(MoviesContext)
+  const [hoveredStar, setHoveredStar] = useState(voteCustomRound(vote))
   const [hoverMode, setHoverMode] = useState(false)
 
-  const roundedVote = voteCustomRound(vote)
-
   const votedMovie = votedMovies.find((movie) => movie.id === id)
-  const userVote = votedMovie?.vote
 
   if (votedMovie) {
     return (
-      <Typography padding={1} color='blue' display='flex' alignItems='center'>
-        Voted: {userVote}
+      <Typography
+        padding={1}
+        color='blue'
+        display='flex'
+        alignItems='center'
+        data-cy='user-vote'
+      >
+        Voted: {votedMovie?.vote}
         <Star htmlColor='yellow' />
       </Typography>
     )
@@ -39,8 +45,9 @@ export const VotingBox = (props: VoteProps) => {
       }}
       onMouseLeave={() => {
         setHoverMode(false)
-        setHoveredStar(0)
+        setHoveredStar(vote)
       }}
+      data-cy='voting-box'
     >
       {hoverMode
         ? [...Array(5)].map((_, index) => {
@@ -51,9 +58,13 @@ export const VotingBox = (props: VoteProps) => {
                   htmlColor='yellow'
                   onMouseEnter={() => setHoveredStar(index + 1)}
                   onClick={() => {
-                    const vote = index + 1
-                    handleMovieVote(id, vote)
+                    const userVote = index + 1
+                    dispatch({
+                      type: ActionTypes.VOTE_MOVIE,
+                      payload: { id, vote: userVote }
+                    })
                   }}
+                  data-cy='filled-stars'
                 />
               )
             } else {
@@ -64,33 +75,46 @@ export const VotingBox = (props: VoteProps) => {
                   onMouseEnter={() => setHoveredStar(index + 1)}
                   onClick={() => {
                     const vote = index + 1
-                    handleMovieVote(id, vote)
+                    dispatch({
+                      type: ActionTypes.VOTE_MOVIE,
+                      payload: { id, vote }
+                    })
                   }}
+                  data-cy='empty-stars'
                 />
               )
             }
           })
         : [...Array(5)].map((_, index) => {
-            if (roundedVote >= index + 1) {
+            if (voteCustomRound(vote) >= index + 1) {
               return (
                 <Star
                   key={index}
                   htmlColor='yellow'
                   onClick={() => {
                     const vote = index + 1
-                    handleMovieVote(id, vote)
+                    dispatch({
+                      type: ActionTypes.VOTE_MOVIE,
+                      payload: { id, vote }
+                    })
                   }}
                 />
               )
             }
-            if (roundedVote >= index + 0.5 && roundedVote < index + 1) {
+            if (
+              voteCustomRound(vote) >= index + 0.5 &&
+              voteCustomRound(vote) < index + 1
+            ) {
               return (
                 <StarHalf
                   key={index}
                   htmlColor='yellow'
                   onClick={() => {
                     const vote = index + 1
-                    handleMovieVote(id, vote)
+                    dispatch({
+                      type: ActionTypes.VOTE_MOVIE,
+                      payload: { id, vote }
+                    })
                   }}
                 />
               )
@@ -101,7 +125,10 @@ export const VotingBox = (props: VoteProps) => {
                 htmlColor='yellow'
                 onClick={() => {
                   const vote = index + 1
-                  handleMovieVote(id, vote)
+                  dispatch({
+                    type: ActionTypes.VOTE_MOVIE,
+                    payload: { id, vote }
+                  })
                 }}
               />
             )
